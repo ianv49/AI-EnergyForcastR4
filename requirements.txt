@@ -1,1 +1,19 @@
+# Core libraries
+requests            # For API calls and HTTP requests
+pandas              # For data handling and analysis
+numpy               # For numerical computations
+
+# Database
+psycopg2-binary     # PostgreSQL connector (binary build for Windows)
+
+# Machine Learning
+scikit-learn        # Classical ML models
+torch               # PyTorch deep learning framework
+
+# Visualization
+matplotlib          # Static plotting
+plotly              # Interactive charts
+
+# IoT / Sensors
+paho-mqtt           # MQTT protocol for sensor communication
 
