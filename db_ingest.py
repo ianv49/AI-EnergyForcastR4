@@ -1,13 +1,12 @@
 import psycopg2
-from datetime import datetime
 
 # Connection parameters
-DB_HOST = "localhost"        # PostgreSQL is running locally
-DB_NAME = "energy_db"        # The database you created in psql
-DB_USER = "postgres"         # The superuser you set up
-DB_PASS = "onsemi111!" # Replace with the password you chose during initdb
+DB_HOST = "localhost"
+DB_NAME = "energy_db"
+DB_USER = "postgres"
+DB_PASS = "onsemi111!"
 
-def ingest_log():
+def ingest_logs_from_file(file_path):
     try:
         # Connect to PostgreSQL
         conn = psycopg2.connect(
@@ -16,34 +15,40 @@ def ingest_log():
             user=DB_USER,
             password=DB_PASS
         )
+        cur = conn.cursor()
         print("✅ Connected to PostgreSQL successfully!")
 
-        # Create a cursor to run SQL commands
-        cur = conn.cursor()
+        # Open and read sensor_logs.txt
+        with open(file_path, "r") as f:
+            for line in f:
+                # Skip empty lines
+                if not line.strip():
+                    continue
 
-        # Example: insert one test row
-        cur.execute("""
-            INSERT INTO sensor_data (timestamp, temperature, humidity, irradiance, wind_speed)
-            VALUES (%s, %s, %s, %s, %s);
-        """, (datetime.now(), 28.5, 65.2, 450.0, 5.8))
+                # Split by comma
+                timestamp, temp, hum, irr, wind = line.strip().split(",")
 
-        # Commit changes
+                # Insert into table
+                cur.execute("""
+                    INSERT INTO sensor_data (timestamp, temperature, humidity, irradiance, wind_speed)
+                    VALUES (%s, %s, %s, %s, %s);
+                """, (timestamp, float(temp), float(hum), float(irr), float(wind)))
+
         conn.commit()
-        print("✅ Test row inserted!")
+        print("✅ Logs ingested successfully!")
 
-        # Fetch last 5 rows
+        # Verify by fetching last 5 rows
         cur.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC LIMIT 5;")
         rows = cur.fetchall()
         print("📊 Latest sensor_data rows:")
         for row in rows:
             print(row)
 
-        # Close connection
         cur.close()
         conn.close()
 
     except Exception as e:
-        print("❌ Error connecting to PostgreSQL:", e)
+        print("❌ Error:", e)
 
 if __name__ == "__main__":
-    ingest_log()
+    ingest_logs_from_file("sensor_logs.txt")
