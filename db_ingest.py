@@ -5,7 +5,7 @@ import psycopg2   # PostgreSQL connector
 DB_HOST = "localhost"          # usually localhost if running locally
 DB_NAME = "your_database_name" # the database you created in PostgreSQL
 DB_USER = "your_username"      # your PostgreSQL username
-DB_PASS = "your_password"      # your PostgreSQL password
+DB_PASS = "onsemi111!"      # your PostgreSQL password
 
 def ingest_logs():
     # Connect to PostgreSQL

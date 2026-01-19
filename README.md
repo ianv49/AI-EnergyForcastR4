@@ -107,4 +107,11 @@ typing_extensions  4.15.0
 tzdata             2025.3
 urllib3            2.6.3
 
-always used for activating env; "venv\Scripts\activate.bat"
+[always used for activating env; "venv\Scripts\activate.bat"]
+[This starts PostgreSQL in the background, listening on port 5432.
+Since you don’t have admin rights, it won’t be a Windows service — you’ll need to run this manually each time.
+in <cmd> <"D:\My Documents\tools\postgresql\pgsql\bin\pg_ctl.exe" -D "D:\My Documents\tools\postgresql\pgsql\data" -l logfile start>]
+[Stopping PostgreSQL. When you’re done, stop the server cleanly, This shuts down PostgreSQL safely:
+in cmd> <"D:\My Documents\tools\postgresql\pgsql\bin\pg_ctl.exe" -D "D:\My Documents\tools\postgresql\pgsql\data" stop>]
+[Restarting PostgreSQL, If you want to restart:
+in cmd> <"D:\My Documents\tools\postgresql\pgsql\bin\pg_ctl.exe" -D "D:\My Documents\tools\postgresql\pgsql\data" restart>]
