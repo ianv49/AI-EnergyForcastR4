@@ -5,7 +5,7 @@ import requests
 DB_HOST = "localhost"
 DB_NAME = "energy_db"
 DB_USER = "postgres"
-DB_PASS = "YourPasswordHere"
+DB_PASS = "PdM"
 
 # Example sensor API endpoint
 SENSOR_API = "http://example.com/api/sensor"  # replace with your real sensor URL
