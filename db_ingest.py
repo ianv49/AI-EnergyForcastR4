@@ -28,10 +28,11 @@ def ingest_logs_from_file(file_path):
                 # Split by comma
                 timestamp, temp, hum, irr, wind = line.strip().split(",")
 
-                # Insert into table
+                # Insert into table with duplicate protection
                 cur.execute("""
                     INSERT INTO sensor_data (timestamp, temperature, humidity, irradiance, wind_speed)
-                    VALUES (%s, %s, %s, %s, %s);
+                    VALUES (%s, %s, %s, %s, %s)
+                    ON CONFLICT (timestamp) DO NOTHING;
                 """, (timestamp, float(temp), float(hum), float(irr), float(wind)))
 
         conn.commit()
@@ -42,12 +43,12 @@ def ingest_logs_from_file(file_path):
         rows = cur.fetchall()
         print("📊 Latest sensor_data rows:")
         for row in rows:
-            # row[1] is the timestamp column
-            ts = row[1].strftime("%Y-%m-%d %H:%M:%S")  # format without microseconds
+            # Format timestamp without microseconds
+            ts = row[1].strftime("%Y-%m-%d %H:%M:%S")
             print((row[0], ts, row[2], row[3], row[4], row[5]))
 
         cur.close()
-        conn.close()        
+        conn.close()
 
     except Exception as e:
         print("❌ Error:", e)

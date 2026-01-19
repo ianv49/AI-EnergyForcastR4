@@ -115,3 +115,28 @@ in <cmd> <"D:\My Documents\tools\postgresql\pgsql\bin\pg_ctl.exe" -D "D:\My Docu
 in cmd> <"D:\My Documents\tools\postgresql\pgsql\bin\pg_ctl.exe" -D "D:\My Documents\tools\postgresql\pgsql\data" stop>]
 [Restarting PostgreSQL, If you want to restart:
 in cmd> <"D:\My Documents\tools\postgresql\pgsql\bin\pg_ctl.exe" -D "D:\My Documents\tools\postgresql\pgsql\data" restart>]
+
+step notes;
+260119;
+Phase,Item,Status
+Phase 1: Environment Setup,Install PostgreSQL portable binaries,Done
+Phase 1: Environment Setup,Initialize database cluster (initdb),Done
+Phase 1: Environment Setup,Start PostgreSQL manually (pg_ctl),Done
+Phase 1: Environment Setup,Connect with psql,Done
+Phase 2: Database Schema,Create energy_db database,Done
+Phase 2: Database Schema,Define sensor_data table schema,Done
+Phase 2: Database Schema,Verify schema with \d sensor_data,Done
+Phase 3: Python Integration,Install psycopg2 driver,Done
+Phase 3: Python Integration,Create db_ingest.py script,Done
+Phase 3: Python Integration,Connect Python to PostgreSQL,Done
+Phase 3: Python Integration,Insert test row via Python,Done
+Phase 3: Python Integration,Fetch and display rows via Python,Done
+Phase 4: Log Ingestion,Adapt script to read sensor_logs.txt,Done
+Phase 4: Log Ingestion,Insert multiple rows from file,Done
+Phase 4: Log Ingestion,Verify ingestion with query output,Done
+Phase 5: Enhancements,Handle duplicate entries (unique timestamp + ON CONFLICT),Pending
+Phase 5: Enhancements,Format timestamp output (seconds only),Done
+Phase 5: Enhancements,Optional: pretty table output,Pending
+Phase 6: Next Steps,Automate ingestion (batch file or cron job),Pending
+Phase 6: Next Steps,Extend ingestion for CSV/real sensor streams,Pending
+Phase 6: Next Steps,Dashboard/visualization integration,Pending
