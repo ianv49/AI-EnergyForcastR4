@@ -1,10 +1,10 @@
 import psycopg2
 
 # Connection parameters
-DB_HOST = "localhost"
-DB_NAME = "energy_db"
-DB_USER = "postgres"
-DB_PASS = "onsemi111!"
+DB_HOST = "localhost"        # PostgreSQL is running locally
+DB_NAME = "energy_db"        # The database you created in psql
+DB_USER = "postgres"         # The superuser you set up
+DB_PASS = "YourPasswordHere" # Replace with the password you chose during initdb
 
 def ingest_logs_from_file(file_path):
     try:
