@@ -7,13 +7,6 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Logging setup
-logger.basicConfig(
-    level=logger.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logger.StreamHandler()]
-)
-
 def get_connection():
     """Create and return a PostgreSQL connection using .env variables."""
     try:
@@ -24,9 +17,8 @@ def get_connection():
             host=os.getenv("DB_HOST", "localhost"),
             port=os.getenv("DB_PORT", "5432")
         )
-        logger.info("Connected to PostgreSQL successfully.")
+        logging.info("Connected to PostgreSQL successfully.")  # <-- use logging here
         return conn
     except Exception as e:
-        logger.error(f"Database connection failed: {e}")
+        logging.error(f"Database connection failed: {e}")
         sys.exit(1)
-
