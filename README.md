@@ -34,6 +34,8 @@ AI-EnergyForcastR4/
 ├── .env
 ├── requirements.txt      # List of Python dependencies
 ├── README.md             # Documentation for setup and usage
+├── logs/
+│   └── ingestion.log     #will be created automatically
 │
 ├── sensors/              # Scripts for sensor data (real or simulated)
 │   └── sensor_ingest.py  # First script: generate or simulate sensor readings
