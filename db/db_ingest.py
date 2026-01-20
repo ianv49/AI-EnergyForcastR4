@@ -3,23 +3,33 @@ import os
 import csv
 from datetime import datetime
 from tabulate import tabulate
+from logging.handlers import TimedRotatingFileHandler
 from db_connector import get_connection   # Import connection function
 
 # ----------------------------
-# Logging Setup (console + file)
+# Logging Setup (console + daily rotating file)
 # ----------------------------
 os.makedirs("logs", exist_ok=True)
 
+# Console handler
 console_handler = logging.StreamHandler()
-file_handler = logging.FileHandler("logs/ingestion.log", mode="a")
 
+# Daily rotating file handler (new file every midnight)
+file_handler = TimedRotatingFileHandler(
+    "logs/ingestion.log", when="midnight", interval=1, backupCount=7, encoding="utf-8"
+)
+# backupCount=7 keeps the last 7 days of logs, older ones are deleted automatically
+
+# Formatter
 formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
 console_handler.setFormatter(formatter)
 file_handler.setFormatter(formatter)
 
+# Logger object
 logger = logging.getLogger("ingestion_logger")
 logger.setLevel(logging.INFO)
 
+# Avoid duplicate handlers
 if not logger.handlers:
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
