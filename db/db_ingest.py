@@ -77,7 +77,7 @@ def ingest_text_file(conn, filepath="data/sensor_logs.txt"):
                 if len(parts) == 5:
                     timestamp, temperature, humidity, irradiance, wind_speed = parts
                     insert_sensor_data(conn, timestamp, float(temperature), float(humidity), float(irradiance), float(wind_speed))
-        logging.info("Text file ingestion complete.")
+        logger.info("Text file ingestion complete.")
     except FileNotFoundError:
         logging.warning(f"{filepath} not found.")
     except Exception as e:
@@ -98,7 +98,7 @@ def ingest_csv_file(conn, filepath="data/sensor_data.csv"):
                     float(row["irradiance"]),
                     float(row["wind_speed"])
                 )
-        logging.info("CSV ingestion complete.")
+        logger.info("CSV ingestion complete.")
     except FileNotFoundError:
         logging.warning(f"{filepath} not found.")
     except Exception as e:

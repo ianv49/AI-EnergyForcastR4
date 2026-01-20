@@ -24,7 +24,7 @@ def get_connection():
             host=os.getenv("DB_HOST", "localhost"),
             port=os.getenv("DB_PORT", "5432")
         )
-        logging.info("Connected to PostgreSQL successfully.")
+        logger.info("Connected to PostgreSQL successfully.")
         return conn
     except Exception as e:
         logging.error(f"Database connection failed: {e}")
