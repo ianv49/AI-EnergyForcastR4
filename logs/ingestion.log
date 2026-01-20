@@ -18,3 +18,8 @@
 2026-01-20 21:17:29,940 [INFO] CSV ingestion complete.
 2026-01-20 21:17:29,941 [INFO] Rows after ingestion: 14
 2026-01-20 21:17:29,942 [INFO] New rows added: 0
+2026-01-20 22:40:03,354 [INFO] Rows before ingestion: 14
+2026-01-20 22:40:03,362 [INFO] Text file ingestion complete.
+2026-01-20 22:40:03,366 [INFO] CSV ingestion complete.
+2026-01-20 22:40:03,368 [INFO] Rows after ingestion: 14
+2026-01-20 22:40:03,368 [INFO] New rows added: 0
