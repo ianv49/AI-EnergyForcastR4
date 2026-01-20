@@ -11,6 +11,17 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()]
 )
 
+def count_rows(conn):
+    """Return the number of rows in sensor_data table."""
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) FROM sensor_data;")
+            result = cur.fetchone()
+            return result[0]
+    except Exception as e:
+        logging.error(f"Error counting rows: {e}")
+        return None
+
 def insert_sensor_data(conn, timestamp, temperature, humidity, irradiance, wind_speed):
     """Insert one row into sensor_data table, strip microseconds, skip duplicates."""
     try:
@@ -76,7 +87,24 @@ def fetch_and_display(conn, limit=10):
 
 if __name__ == "__main__":
     conn = get_connection()
+
+    # Step 1: Count rows before ingestion
+    before_count = count_rows(conn)
+    print(f"📊 Rows before ingestion: {before_count}")
+
+    # Step 2: Run ingestion
     ingest_text_file(conn, "data/sensor_logs.txt")
     ingest_csv_file(conn, "data/sensor_data.csv")
+
+    # Step 3: Count rows after ingestion
+    after_count = count_rows(conn)
+    print(f"📊 Rows after ingestion: {after_count}")
+
+    # Step 4: Show how many new rows were added
+    if before_count is not None and after_count is not None:
+        print(f"✅ New rows added: {after_count - before_count}")
+
+    # Step 5: Display latest rows
     fetch_and_display(conn, limit=10)
+
     conn.close()
