@@ -49,7 +49,7 @@ AI-EnergyForcastR4/
 └── notebooks/            # Jupyter notebooks for demos
     └── data_pipeline_demo.ipynb  # Step-by-step interactive demo
 
-## my notes
+### my notes
 '''bash
 Perfect 🎉 — that package list shows your environment is now fully set up and healthy. You’ve got all the core libraries installed:
 requests → API calls and HTTP requests
@@ -113,7 +113,6 @@ in cmd> <"D:\My Documents\tools\postgresql\pgsql\bin\pg_ctl.exe" -D "D:\My Docum
 [Restarting PostgreSQL, If you want to restart:
 in cmd> <"D:\My Documents\tools\postgresql\pgsql\bin\pg_ctl.exe" -D "D:\My Documents\tools\postgresql\pgsql\data" restart>]
 
-step notes;
 ...notes 260119;
 Phase,Item,Status
 Phase 1: Environment Setup,Install PostgreSQL portable binaries,Done
@@ -139,4 +138,36 @@ Phase 6: Next Steps,Extend ingestion for CSV/real sensor streams,Pending
 Phase 6: Next Steps,Dashboard/visualization integration,Pending
 ...notes 260120;
 sql password = PdM
-
+Phase 1: Environment Setup
+Install PostgreSQL portable binaries → Done
+Initialize database cluster (initdb) → Done
+Start PostgreSQL manually (pg_ctl) → Done
+Connect with psql → Done
+Phase 2: Database Schema
+Create energy_db database → Done
+Define sensor_data table schema → Done
+Verify schema with \d sensor_data → Done
+Phase 3: Python Integration
+Install psycopg2 driver → Done
+Create db_ingest.py script → Done
+Connect Python to PostgreSQL → Done
+Insert test row via Python → Done
+Fetch and display rows via Python → Done
+Phase 4: Log Ingestion
+Adapt script to read sensor_logs.txt → Done
+Insert multiple rows from file → Done
+Verify ingestion with query output → Done
+Phase 5: Enhancements
+Handle duplicate entries (unique timestamp + ON CONFLICT) → Pending
+Format timestamp output (seconds only) → Done
+Pretty table output (tabulate) → Done
+Row count before/after ingestion → Done
+Skip header line in text ingestion → Done
+Modularize connection into db_connector.py → Done
+Add test_connection.py script → Done
+Show top/bottom rows in test script → Done
+Phase 6: Next Steps
+Automate ingestion (batch file or cron job) → Pending
+Extend ingestion for CSV/real sensor streams → Pending
+Dashboard/visualization integration → Pending
+Add permanent log file output (logs/ingestion.log) → Pending
