@@ -3,12 +3,20 @@ import csv
 from datetime import datetime
 from tabulate import tabulate
 from db_connector import get_connection   # Import connection function
+import logging
+import os
 
-# Logging setup
+# Ensure logs folder exists
+os.makedirs("logs", exist_ok=True)
+
+# Logging setup: console + file
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.StreamHandler()]
+    handlers=[
+        logging.StreamHandler(),                        # print to console
+        logging.FileHandler("logs/ingestion.log", mode="a")  # save to file
+    ]
 )
 
 def count_rows(conn):
