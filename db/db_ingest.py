@@ -1,53 +1,20 @@
-import os
-import sys
-import psycopg2
 import logging
 import csv
 from datetime import datetime
 from tabulate import tabulate
-from dotenv import load_dotenv
+from db_connector import get_connection   # Import connection function
 
-# ----------------------------
-# Load environment variables
-# ----------------------------
-load_dotenv()
-
-# ----------------------------
-# Logging Setup
-# ----------------------------
+# Logging setup
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[logging.StreamHandler()]
 )
 
-# ----------------------------
-# Database Connection
-# ----------------------------
-def get_connection():
-    try:
-        conn = psycopg2.connect(
-            dbname=os.getenv("DB_NAME", "energy_db"),
-            user=os.getenv("DB_USER", "postgres"),
-            password=os.getenv("DB_PASS", "PdM"),
-            host=os.getenv("DB_HOST", "localhost"),
-            port=os.getenv("DB_PORT", "5432")
-        )
-        logging.info("Connected to PostgreSQL successfully.")
-        return conn
-    except Exception as e:
-        logging.error(f"Database connection failed: {e}")
-        sys.exit(1)
-
-# ----------------------------
-# Insert Function (5 columns)
-# ----------------------------
 def insert_sensor_data(conn, timestamp, temperature, humidity, irradiance, wind_speed):
+    """Insert one row into sensor_data table, strip microseconds, skip duplicates."""
     try:
-        # Parse timestamp and strip microseconds
-        ts = datetime.fromisoformat(timestamp)
-        ts = ts.replace(microsecond=0)
-
+        ts = datetime.fromisoformat(timestamp).replace(microsecond=0)
         with conn.cursor() as cur:
             cur.execute(
                 """
@@ -61,10 +28,8 @@ def insert_sensor_data(conn, timestamp, temperature, humidity, irradiance, wind_
     except Exception as e:
         logging.error(f"Insert failed: {e}")
 
-# ----------------------------
-# Ingest from Plain Text Logs
-# ----------------------------
 def ingest_text_file(conn, filepath="data/sensor_logs.txt"):
+    """Read plain text log file and insert rows."""
     try:
         with open(filepath, "r") as f:
             for line in f:
@@ -78,10 +43,8 @@ def ingest_text_file(conn, filepath="data/sensor_logs.txt"):
     except Exception as e:
         logging.error(f"Error ingesting text file: {e}")
 
-# ----------------------------
-# Ingest from CSV
-# ----------------------------
 def ingest_csv_file(conn, filepath="data/sensor_data.csv"):
+    """Read CSV file and insert rows."""
     try:
         with open(filepath, newline="") as csvfile:
             reader = csv.DictReader(csvfile)
@@ -100,10 +63,8 @@ def ingest_csv_file(conn, filepath="data/sensor_data.csv"):
     except Exception as e:
         logging.error(f"Error ingesting CSV file: {e}")
 
-# ----------------------------
-# Display Latest Rows
-# ----------------------------
 def fetch_and_display(conn, limit=10):
+    """Display latest rows in a pretty table."""
     try:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC LIMIT %s;", (limit,))
@@ -113,9 +74,6 @@ def fetch_and_display(conn, limit=10):
     except Exception as e:
         logging.error(f"Error fetching rows: {e}")
 
-# ----------------------------
-# Main Execution
-# ----------------------------
 if __name__ == "__main__":
     conn = get_connection()
     ingest_text_file(conn, "data/sensor_logs.txt")
