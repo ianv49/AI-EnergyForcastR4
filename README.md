@@ -202,3 +202,49 @@ Step 3: Schedule with Task Scheduler
     Set trigger → every day at 4:00 PM.
     Set action → run run_ingest.bat.
     Save → ingestion now runs automatically.
+
+...notes 260121;
+Phase,Item,Status
+Phase 1: Environment Setup,Install PostgreSQL portable binaries,Done
+Phase 1: Environment Setup,Initialize database cluster (initdb),Done
+Phase 1: Environment Setup,Start PostgreSQL manually (pg_ctl),Done
+Phase 1: Environment Setup,Connect with psql,Done
+Phase 2: Database Schema,Create energy_db database,Done
+Phase 2: Database Schema,Define sensor_data table schema,Done
+Phase 2: Database Schema,Verify schema with \d sensor_data,Done
+Phase 3: Python Integration,Install psycopg2 driver,Done
+Phase 3: Python Integration,Create db_ingest.py script,Done
+Phase 3: Python Integration,Connect Python to PostgreSQL,Done
+Phase 3: Python Integration,Insert test row via Python,Done
+Phase 3: Python Integration,Fetch and display rows via Python,Done
+Phase 4: Log Ingestion,Adapt script to read sensor_logs.txt,Done
+Phase 4: Log Ingestion,Insert multiple rows from file,Done
+Phase 4: Log Ingestion,Verify ingestion with query output,Done
+Phase 5: Enhancements,Handle duplicate entries (unique timestamp + ON CONFLICT),Done
+Phase 5: Enhancements,Format timestamp output (seconds only),Done
+Phase 5: Enhancements,Pretty table output (tabulate),Done
+Phase 5: Enhancements,Row count before/after ingestion,Done
+Phase 5: Enhancements,Skip header line in text ingestion,Done
+Phase 5: Enhancements,Modularize connection into db_connector.py,Done
+Phase 5: Enhancements,Add test_connection.py script,Done
+Phase 5: Enhancements,Show top/bottom rows in test script,Done
+Phase 6: Next Steps,Automate ingestion (batch file or cron job),Done
+Phase 6: Next Steps,Extend ingestion for CSV/real sensor streams,Done (simulation script ready)
+Phase 6: Next Steps,Dashboard/visualization integration,Done (Streamlit dashboard running)
+Phase 6: Next Steps,Add permanent log file output (logs/ingestion.log),Done
+Phase 6: Next Steps,Daily log rotation (TimedRotatingFileHandler),Done
+Phase 7: Visualization & Dashboard,Plot temperature vs timestamp chart,Done
+Phase 7: Visualization & Dashboard,Add multiple charts (humidity, irradiance, wind speed),Done
+Phase 7: Visualization & Dashboard,Build simple dashboard (Streamlit with sidebar),Done
+Phase 8: Real-Time Ingestion,Simulate sensor streams (append rows every 5minute),Done
+Phase 8: Real-Time Ingestion,Enable continuous ingestion pipeline,Pending
+Phase 9: Predictive Analytics,Calculate averages/min/max/moving averages,Pending
+Phase 9: Predictive Analytics,Train ML model for forecasting (scikit-learn),Pending
+Phase 10: Deployment & Scaling,Containerize with Docker,Pending
+Phase 10: Deployment & Scaling,Deploy to cloud (AWS/Azure/GCP),Pending
+Phase 11: Web-Sensor Data Integration,Connect to OpenWeather API for local weather data,Pending
+Phase 11: Web-Sensor Data Integration,Ingest NASA POWER API for solar irradiance and climate data,Pending
+Phase 11: Web-Sensor Data Integration,Integrate PVOutput API for solar PV system performance,Pending
+Phase 11: Web-Sensor Data Integration,Optional: Add other APIs (NOAA, Meteostat, etc.),Pending
+Phase 11: Web-Sensor Data Integration,Normalize and store web-sensor data into sensor_data table,Pending
+Phase 11: Web-Sensor Data Integration,Combine local sensor + web API data for richer analytics,Pending
