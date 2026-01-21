@@ -255,3 +255,25 @@ Phase 11: Web-Sensor Data Integration,Combine local sensor + web API data for ri
     Optional background run → Start-Process python "-m streamlit run dashboard.py".
     Now dashboard should run reliably.
     next to add OpenWeather API ingestion so dashboard shows both local sensor data and live weather data.
+...work on mac.
+...AI review of files:
+File,Type,Location,Lines,Status,Purpose,Issues
+dashboard.py,Python,root,60,Needs Update,Streamlit dashboard for data visualization,Hardcoded postgres credentials
+db_connector.py,Python,db/,28,✅ Working,Centralized DB connection handler,Uses .env variables (proper)
+db_ingest.py,Python,db/,144,✅ Working,Ingest sensor data from TXT/CSV,Proper logging with rotation
+test_connection.py,Python,db/,15,✅ Working,Verify PostgreSQL connection,Simple test script
+sensor_stream_sim.py,Python,db/,30,✅ Working,Real-time sensor data simulator,5-minute interval generation
+api_ingest_openweather.py,Python,db/,?,Pending,OpenWeather API integration,Not reviewed (likely incomplete)
+sensor_ingest.py,Python,sensors/,20,⚠️ Incomplete,Sensor data collection,Uses old path (sensor_logs.txt)
+preprocess.py,Python,preprocessing/,?,Empty,Data cleaning/normalization,No implementation yet
+openweather.py,Python,api_wrappers/,17,✅ Working,OpenWeather API wrapper,API key visible (security concern)
+nasa_power.py,Python,api_wrappers/,?,Empty,NASA POWER API wrapper,No implementation yet
+requirements.txt,Text,root,23,⚠️ Outdated,Python dependencies list,Missing: streamlit
+schema.sql,SQL,db/,?,Empty,Database schema definition,No implementation yet
+test_imports.py,Python,root,8,✅ Working,Verify library imports,Simple check
+sensor_data.csv,CSV,data/,5,✅ Complete,Sample sensor data,2 rows of data
+sensor_logs.txt,Text,data/,5,✅ Complete,Sensor logs (raw),5 rows after ingestion
+.env,Config,root,7,✅ Configured,Environment variables,Credentials properly set for macOS
+README.md,Markdown,root,258,✅ Complete,Project documentation,Well-documented
+myNotes.txt,Text,root,378,✅ Complete,Development notes,Phase tracking included
+run_ingest.bat,Batch,root,?,Incomplete,Windows automation script,Not updated for macOS
