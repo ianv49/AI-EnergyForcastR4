@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔴 Simulation Dashboard - Real-Time Data</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .status-badge.inactive {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .status-badge.active {
+            background: #4CAF50;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-start {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-start:hover:not(:disabled) {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .btn-stop {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-stop:hover:not(:disabled) {
+            background: #da190b;
+            transform: scale(1.05);
+        }
+
+        .btn-kill {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-kill:hover:not(:disabled) {
+            background: #b71c1c;
+            transform: scale(1.05);
+        }
+
+        .btn-clear {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-clear:hover:not(:disabled) {
+            background: #e68900;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            color: #333;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .metric-unit {
+            color: #999;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            grid-column: 1 / -1;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .timestamp {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .number {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .info-panel h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .info-text {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .info-text code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d32f2f;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Controls -->
+        <header>
+            <div class="title">
+                <h1>🔴 Simulation Dashboard</h1>
+                <span class="status-badge inactive" id="statusBadge">INACTIVE</span>
+            </div>
+            <div class="controls">
+                <button class="btn-start" id="startBtn" onclick="startSimulation()">
+                    ▶️ Start Simulator
+                </button>
+                <button class="btn-stop" id="stopBtn" onclick="stopSimulation()" disabled>
+                    ⏹️ Stop Simulator
+                </button>
+                <button class="btn-kill" id="killBtn" onclick="killAll()" disabled>
+                    🛑 Force Kill
+                </button>
+                <button class="btn-clear" id="clearBtn" onclick="clearData()">
+                    🗑️ Clear Data
+                </button>
+            </div>
+        </header>
+
+        <!-- Simulation Info -->
+        <div class="info-panel">
+            <h3>ℹ️ About This Dashboard</h3>
+            <div class="info-text">
+                <p><strong>⚡ For Simulation ONLY</strong> - This dashboard is designed for testing and development during simulation runs.</p>
+                <p style="margin-top: 8px;"><strong>📊 Real-Time Display:</strong> Shows 20 rows of sensor data generated at 2-second intervals.</p>
+                <p style="margin-top: 8px;"><strong>🎮 Controls:</strong> Use buttons to start/stop simulator and clear database.</p>
+            </div>
+        </div>
+
+        <!-- Status & Progress Metrics -->
+        <div class="metrics-row">
+            <div class="metric-card">
+                <div class="metric-label">📊 Total Records</div>
+                <div class="metric-value" id="recordCount">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">⏱️ Simulation Time</div>
+                <div class="metric-value" id="simTime">--</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">🌡️ Latest Temperature</div>
+                <div class="metric-value" id="tempValue">--<span class="metric-unit">°C</span></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">💧 Latest Humidity</div>
+                <div class="metric-value" id="humidValue">--<span class="metric-unit">%</span></div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="metric-card">
+            <div class="metric-label">📈 Simulation Progress</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+        </div>
+
+        <!-- Charts & Table -->
+        <div class="dashboard">
+            <!-- Temperature Chart -->
+            <div class="chart-container">
+                <div class="chart-title">🌡️ Temperature Trend</div>
+                <div id="tempChart" style="height: 300px;"></div>
+            </div>
+
+            <!-- Humidity Chart -->
+            <div class="chart-container">
+                <div class="chart-title">💧 Humidity Trend</div>
+                <div id="humidChart" style="height: 300px;"></div>
+            </div>
+
+            <!-- Irradiance Chart -->
+            <div class="chart-container">
+                <div class="chart-title">☀️ Irradiance Trend</div>
+                <div id="irradChart" style="height: 300px;"></div>
+            </div>
+
+            <!-- Wind Speed Chart -->
+            <div class="chart-container">
+                <div class="chart-title">💨 Wind Speed Trend</div>
+                <div id="windChart" style="height: 300px;"></div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container">
+            <div class="chart-title" style="margin-bottom: 15px;">📋 Raw Data (Latest 20 Rows)</div>
+            <div id="tableContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <p>No data yet. Start the simulator to begin!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8000/api";
+        let refreshInterval;
+        let simStartTime = null;
+
+        // Initialize on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            updateStatus();
+            refreshInterval = setInterval(updateDashboard, 1000);
+        });
+
+        async function startSimulation() {
+            try {
+                const response = await fetch(`${API_BASE}/start-sim`, { method: "POST" });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    simStartTime = new Date(data.timestamp);
+                    document.getElementById("startBtn").disabled = true;
+                    document.getElementById("stopBtn").disabled = false;
+                    document.getElementById("statusBadge").textContent = "🟢 ACTIVE";
+                    document.getElementById("statusBadge").className = "status-badge active";
+                    updateDashboard();
+                } else {
+                    alert("Error: " + data.error);
+                }
+            } catch (error) {
+                alert("Failed to start simulator: " + error.message);
+            }
+        }
+
+        async function stopSimulation() {
+            try {
+                const response = await fetch(`${API_BASE}/stop-sim`, { method: "POST" });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById("startBtn").disabled = false;
+                    document.getElementById("stopBtn").disabled = true;
+                    document.getElementById("killBtn").disabled = true;
+                    document.getElementById("statusBadge").textContent = "⚫ STOPPED";
+                    document.getElementById("statusBadge").className = "status-badge inactive";
+                    simStartTime = null;
+                } else {
+                    alert("Error: " + data.error);
+                }
+            } catch (error) {
+                alert("Failed to stop simulator: " + error.message);
+            }
+        }
+
+        async function killAll() {
+            if (!confirm("Force kill all simulation processes? This is a hard stop.")) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/kill-all`, { method: "POST" });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById("startBtn").disabled = false;
+                    document.getElementById("stopBtn").disabled = true;
+                    document.getElementById("killBtn").disabled = true;
+                    document.getElementById("statusBadge").textContent = "⚫ KILLED";
+                    document.getElementById("statusBadge").className = "status-badge inactive";
+                    simStartTime = null;
+                    alert("✅ All processes terminated");
+                } else {
+                    alert("Error: " + data.error);
+                }
+            } catch (error) {
+                alert("Failed to kill processes: " + error.message);
+            }
+        }
+
+        async function clearData() {
+            if (!confirm("Clear all data from database? This cannot be undone.")) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/clear-data`, { method: "POST" });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert("Cleared " + data.count + " records");
+                    updateDashboard();
+                } else {
+                    alert("Error: " + data.error);
+                }
+            } catch (error) {
+                alert("Failed to clear data: " + error.message);
+            }
+        }
+
+        async function updateStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                const status = await response.json();
+                
+                if (status.active) {
+                    document.getElementById("statusBadge").textContent = "🟢 ACTIVE";
+                    document.getElementById("statusBadge").className = "status-badge active";
+                    document.getElementById("startBtn").disabled = true;
+                    document.getElementById("stopBtn").disabled = false;
+                    document.getElementById("killBtn").disabled = false;
+                } else {
+                    document.getElementById("statusBadge").textContent = "⚫ INACTIVE";
+                    document.getElementById("statusBadge").className = "status-badge inactive";
+                    document.getElementById("startBtn").disabled = false;
+                    document.getElementById("stopBtn").disabled = true;
+                    document.getElementById("killBtn").disabled = true;
+                }
+            } catch (error) {
+                console.error("Failed to update status:", error);
+            }
+        }
+
+        async function updateDashboard() {
+            try {
+                const response = await fetch(`${API_BASE}/data`);
+                const result = await response.json();
+                const data = result.data || [];
+
+                // Update metrics
+                document.getElementById("recordCount").textContent = data.length;
+                
+                // Update simulation time
+                if (simStartTime) {
+                    const elapsed = Math.floor((new Date() - simStartTime) / 1000);
+                    document.getElementById("simTime").textContent = elapsed + "s";
+                }
+
+                // Update progress
+                const progressPercent = Math.min(100, Math.round((data.length / 20) * 100));
+                document.getElementById("progressFill").style.width = progressPercent + "%";
+                document.getElementById("progressFill").textContent = progressPercent + "%";
+
+                // Update latest values
+                if (data.length > 0) {
+                    const latest = data[data.length - 1];
+                    document.getElementById("tempValue").innerHTML = 
+                        (latest.temperature !== null ? latest.temperature.toFixed(1) : "--") + 
+                        '<span class="metric-unit">°C</span>';
+                    document.getElementById("humidValue").innerHTML = 
+                        (latest.humidity !== null ? latest.humidity.toFixed(1) : "--") + 
+                        '<span class="metric-unit">%</span>';
+                }
+
+                // Update charts
+                updateCharts(data);
+
+                // Update table
+                updateTable(data);
+
+            } catch (error) {
+                console.error("Failed to update dashboard:", error);
+            }
+        }
+
+        function updateCharts(data) {
+            if (data.length === 0) return;
+
+            const timestamps = data.map(d => new Date(d.timestamp).toLocaleTimeString());
+            const temperatures = data.map(d => d.temperature);
+            const humidities = data.map(d => d.humidity);
+            const irradiances = data.map(d => d.irradiance);
+            const windSpeeds = data.map(d => d.wind_speed);
+
+            // Temperature Chart
+            const tempTrace = {
+                x: timestamps,
+                y: temperatures,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Temperature',
+                line: { color: '#FF6B6B', width: 2 },
+                marker: { size: 4 }
+            };
+            Plotly.react('tempChart', [tempTrace], { 
+                margin: { l: 40, r: 20, t: 20, b: 30 },
+                hovermode: 'x unified',
+                yaxis: { title: '°C' }
+            });
+
+            // Humidity Chart
+            const humidTrace = {
+                x: timestamps,
+                y: humidities,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Humidity',
+                line: { color: '#4ECDC4', width: 2 },
+                marker: { size: 4 }
+            };
+            Plotly.react('humidChart', [humidTrace], { 
+                margin: { l: 40, r: 20, t: 20, b: 30 },
+                hovermode: 'x unified',
+                yaxis: { title: '%' }
+            });
+
+            // Irradiance Chart
+            const irradTrace = {
+                x: timestamps,
+                y: irradiances,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Irradiance',
+                line: { color: '#FFD93D', width: 2 },
+                marker: { size: 4 }
+            };
+            Plotly.react('irradChart', [irradTrace], { 
+                margin: { l: 40, r: 20, t: 20, b: 30 },
+                hovermode: 'x unified',
+                yaxis: { title: 'W/m²' }
+            });
+
+            // Wind Speed Chart
+            const windTrace = {
+                x: timestamps,
+                y: windSpeeds,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Wind Speed',
+                line: { color: '#95E1D3', width: 2 },
+                marker: { size: 4 }
+            };
+            Plotly.react('windChart', [windTrace], { 
+                margin: { l: 40, r: 20, t: 20, b: 30 },
+                hovermode: 'x unified',
+                yaxis: { title: 'm/s' }
+            });
+        }
+
+        function updateTable(data) {
+            const container = document.getElementById("tableContainer");
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No data yet. Start the simulator to begin!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Temperature (°C)</th>
+                            <th>Humidity (%)</th>
+                            <th>Irradiance (W/m²)</th>
+                            <th>Wind Speed (m/s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.forEach(row => {
+                html += `
+                    <tr>
+                        <td class="timestamp">${new Date(row.timestamp).toLocaleString()}</td>
+                        <td class="number">${row.temperature !== null ? row.temperature.toFixed(2) : '--'}</td>
+                        <td class="number">${row.humidity !== null ? row.humidity.toFixed(2) : '--'}</td>
+                        <td class="number">${row.irradiance !== null ? row.irradiance.toFixed(0) : '--'}</td>
+                        <td class="number">${row.wind_speed !== null ? row.wind_speed.toFixed(2) : '--'}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

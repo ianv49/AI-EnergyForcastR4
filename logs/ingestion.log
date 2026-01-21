@@ -8,3 +8,31 @@
 2026-01-21 19:03:53,624 [INFO] CSV ingestion complete.
 2026-01-21 19:03:53,624 [INFO] Rows after ingestion: 3
 2026-01-21 19:03:53,624 [INFO] New rows added: 3
+2026-01-21 19:17:15,844 [INFO] ============================================================
+2026-01-21 19:17:15,844 [INFO] Sensor Data Ingestion Tool - 2026-01-21 19:17:15.844920
+2026-01-21 19:17:15,844 [INFO] Platform: darwin
+2026-01-21 19:17:15,844 [INFO] ============================================================
+2026-01-21 19:17:15,876 [INFO] Connected to PostgreSQL successfully.
+2026-01-21 19:17:15,877 [INFO] Running single ingestion
+2026-01-21 19:17:15,889 [INFO] Starting ingestion. Rows before: 3
+2026-01-21 19:17:15,891 [INFO] Text file ingestion complete.
+2026-01-21 19:17:15,891 [INFO] Text file ingestion complete.
+2026-01-21 19:17:15,892 [INFO] CSV ingestion complete.
+2026-01-21 19:17:15,892 [INFO] CSV ingestion complete.
+2026-01-21 19:17:15,892 [INFO] Ingestion complete. Rows after: 3. Added: 0
+2026-01-21 19:17:15,892 [INFO] Done!
+2026-01-21 19:17:15,892 [INFO] Database connection closed.
+2026-01-21 19:27:08,662 [INFO] ============================================================
+2026-01-21 19:27:08,662 [INFO] Sensor Data Ingestion Tool - 2026-01-21 19:27:08.662107
+2026-01-21 19:27:08,662 [INFO] Platform: darwin
+2026-01-21 19:27:08,662 [INFO] ============================================================
+2026-01-21 19:27:08,673 [INFO] Connected to PostgreSQL successfully.
+2026-01-21 19:27:08,674 [INFO] Running single ingestion
+2026-01-21 19:27:08,675 [INFO] Starting ingestion. Rows before: 3
+2026-01-21 19:27:08,677 [INFO] Text file ingestion complete.
+2026-01-21 19:27:08,677 [INFO] Text file ingestion complete.
+2026-01-21 19:27:08,678 [INFO] CSV ingestion complete.
+2026-01-21 19:27:08,678 [INFO] CSV ingestion complete.
+2026-01-21 19:27:08,679 [INFO] Ingestion complete. Rows after: 3. Added: 0
+2026-01-21 19:27:08,679 [INFO] Done!
+2026-01-21 19:27:08,679 [INFO] Database connection closed.

@@ -1,8 +1,13 @@
 import requests, certifi
 from datetime import datetime
+import os
+from dotenv import load_dotenv
 
-API_KEY = "0723d71a05e58ae3f7fc91e39a901e6b"
-CITY = "Manila"
+# Load environment variables
+load_dotenv()
+
+API_KEY = os.getenv("OPENWEATHER_API_KEY", "0723d71a05e58ae3f7fc91e39a901e6b")
+CITY = os.getenv("CITY", "Manila")
 URL = f"https://api.openweathermap.org/data/2.5/weather?q={CITY}&appid={API_KEY}&units=metric"
 
 def get_weather_data():
